@@ -44,10 +44,14 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await Supabase.instance.client.auth.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const SignInPage()),
-              );
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignInPage()),
+                  );
+                }
+              });
             },
           ),
         ],
@@ -75,7 +79,8 @@ class _HomePageState extends State<HomePage> {
                     child: Card(
                       margin: const EdgeInsets.all(8),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       color: Colors.white,
                       elevation: 4,
                       child: Column(
@@ -83,7 +88,9 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.orange.shade200,
                               borderRadius: const BorderRadius.vertical(
@@ -91,18 +98,25 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             width: double.infinity,
-                            child: Text(entry.key,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF7C4700))),
+                            child: Text(
+                              entry.key,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF7C4700),
+                              ),
+                            ),
                           ),
                           Expanded(
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: entry.value
-                                  .map((recipe) => RecipeCard(
-                                        recipe: recipe,
-                                        onDelete: fetchRecipes,
-                                      ))
+                                  .map(
+                                    (recipe) => RecipeCard(
+                                      recipe: recipe,
+                                      onDelete: fetchRecipes,
+                                    ),
+                                  )
                                   .toList(),
                             ),
                           ),
@@ -117,10 +131,12 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const RecipeForm(),
-            ),
-          ).then((_) => fetchRecipes());
+            MaterialPageRoute(builder: (context) => const RecipeForm()),
+          ).then((result) {
+            if (result == true) {
+              fetchRecipes();
+            }
+          });
         },
         label: const Text("Add New Recipe"),
         icon: const Icon(Icons.add),

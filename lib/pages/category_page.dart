@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/recipe.dart';
@@ -10,10 +9,10 @@ class CategoryPage extends StatefulWidget {
   final String categoryName;
 
   const CategoryPage({
-    Key? key,
+    super.key,
     required this.categoryId,
     required this.categoryName,
-  }) : super(key: key);
+  });
 
   @override
   State<CategoryPage> createState() => _CategoryPageState();
@@ -70,9 +69,7 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.categoryName),
-      ),
+      appBar: AppBar(title: Text(widget.categoryName)),
       body: recipes.isEmpty
           ? const Center(child: Text("No recipes found in this category"))
           : ListView.builder(
@@ -87,7 +84,8 @@ class _CategoryPageState extends State<CategoryPage> {
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: ListTile(
-                    leading: recipe.imageUrl != null && recipe.imageUrl!.isNotEmpty
+                    leading:
+                        recipe.imageUrl != null && recipe.imageUrl!.isNotEmpty
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.network(
@@ -96,12 +94,19 @@ class _CategoryPageState extends State<CategoryPage> {
                               height: 60,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.image_not_supported,
-                                    size: 40, color: Colors.grey);
+                                return const Icon(
+                                  Icons.image_not_supported,
+                                  size: 40,
+                                  color: Colors.grey,
+                                );
                               },
                             ),
                           )
-                        : const Icon(Icons.fastfood, size: 40, color: Colors.grey),
+                        : const Icon(
+                            Icons.fastfood,
+                            size: 40,
+                            color: Colors.grey,
+                          ),
                     title: Text(recipe.title),
                     subtitle: Text(recipe.description),
                     trailing: Row(
@@ -112,9 +117,7 @@ class _CategoryPageState extends State<CategoryPage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (_) => RecipeForm(),
-                              ),
+                              MaterialPageRoute(builder: (_) => RecipeForm()),
                             ).then((_) => _loadRecipes());
                           },
                         ),
@@ -132,9 +135,7 @@ class _CategoryPageState extends State<CategoryPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => RecipeForm(),
-            ),
+            MaterialPageRoute(builder: (_) => RecipeForm()),
           ).then((_) => _loadRecipes());
         },
         label: const Text("Add New  Recipe"),

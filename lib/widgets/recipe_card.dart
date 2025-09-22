@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/recipe.dart';
 import '../recipe/recipe_repository.dart';
-
+import '../recipe/recipe_form.dart';
 
 class RecipeCard extends StatelessWidget {
   final Recipe recipe;
@@ -11,7 +11,7 @@ class RecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  return Card(
+    return Card(
       child: Card(
         margin: const EdgeInsets.all(8),
         child: SizedBox(
@@ -42,47 +42,73 @@ class RecipeCard extends StatelessWidget {
                     ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(recipe.title,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
+                child: Text(
+                  recipe.title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(recipe.description,
-                    maxLines: 2, overflow: TextOverflow.ellipsis),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text("Delete Recipe"),
-                        content: const Text(
-                            "Are you sure you want to delete this recipe?"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, false),
-                            child: const Text("No"),
-                          ),
-                          ElevatedButton(
-                            onPressed: () => Navigator.pop(context, true),
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red),
-                            child: const Text("Yes"),
-                          ),
-                        ],
-                      ),
-                    );
-
-                    if (confirm == true) {
-                      await RecipeRepository().deleteRecipe(recipe.id ?? 0);
-                      onDelete?.call(); 
-                    }
-                  },
+                child: Text(
+                  recipe.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecipeForm(recipe: recipe),
+                        ),
+                      ).then((result) {
+                        if (result == true) {
+                          onDelete?.call();
+                        }
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Delete Recipe"),
+                          content: const Text(
+                            "Are you sure you want to delete this recipe?",
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text("No"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                              child: const Text("Yes"),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirm == true) {
+                        await RecipeRepository().deleteRecipe(recipe.id ?? 0);
+                        onDelete?.call();
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
           ),

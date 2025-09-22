@@ -14,20 +14,24 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
+    _checkAuth();
   }
 
   Future<void> _checkAuth() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+
     final session = Supabase.instance.client.auth.currentSession;
-    if (session == null) {
+    if (session != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const SignInPage()),
+        MaterialPageRoute(builder: (_) => const HomePage()),
       );
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
+        MaterialPageRoute(builder: (_) => const SignInPage()),
       );
     }
   }
@@ -62,21 +66,8 @@ class _SplashPageState extends State<SplashPage> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
-                  onPressed: () {
-                    _checkAuth();
-                  },
-                  child: const Text(
-                    "Get Started",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
                 ),
               ],
             ),

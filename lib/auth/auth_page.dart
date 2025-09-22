@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:easy_deshi_recipes/pages/home_page.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+  const AuthPage({super.key});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -33,18 +33,29 @@ class _AuthPageState extends State<AuthPage> {
 
     try {
       if (_isLogin) {
-        final res = await supabase.auth.signInWithPassword(email: email, password: password);
-        if (res.user != null) {
+        final res = await supabase.auth.signInWithPassword(
+          email: email,
+          password: password,
+        );
+        if (res.user != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Welcome back! Login successful.')),
           );
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const HomePage()),
+          );
         }
       } else {
-        final res = await supabase.auth.signUp(email: email, password: password);
-        if (res.user != null) {
+        final res = await supabase.auth.signUp(
+          email: email,
+          password: password,
+        );
+        if (res.user != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Sign up successful! Please verify your email.')),
+            const SnackBar(
+              content: Text('Sign up successful! Please verify your email.'),
+            ),
           );
           setState(() {
             _isLogin = true;
@@ -52,13 +63,17 @@ class _AuthPageState extends State<AuthPage> {
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     } finally {
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -93,7 +108,9 @@ class _AuthPageState extends State<AuthPage> {
                   ),
             TextButton(
               onPressed: _toggle,
-              child: Text(_isLogin ? 'No account? Sign Up' : 'Have an account? Sign In'),
+              child: Text(
+                _isLogin ? 'No account? Sign Up' : 'Have an account? Sign In',
+              ),
             ),
           ],
         ),

@@ -8,7 +8,7 @@ class RecipeRepository {
     final response = await supabase.from('recipes').select();
 
     return (response as List)
-  .map((data) => Recipe.fromMap(data as Map<String, dynamic>))
+        .map((data) => Recipe.fromMap(data as Map<String, dynamic>))
         .toList();
   }
 
@@ -19,6 +19,18 @@ class RecipeRepository {
       'category': recipe.category,
       'image_url': recipe.imageUrl,
     });
+  }
+
+  Future<void> updateRecipe(Recipe recipe) async {
+    await supabase
+        .from('recipes')
+        .update({
+          'title': recipe.title,
+          'description': recipe.description,
+          'category': recipe.category,
+          'image_url': recipe.imageUrl,
+        })
+        .eq('id', recipe.id);
   }
 
   Future<void> deleteRecipe(int id) async {

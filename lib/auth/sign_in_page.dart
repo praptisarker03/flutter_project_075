@@ -29,10 +29,15 @@ class _SignInPageState extends State<SignInPage> {
         );
       }
     } on AuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message)));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.message)));
+      }
     } finally {
-      setState(() => _loading = false);
+      if (mounted) {
+        setState(() => _loading = false);
+      }
     }
   }
 
@@ -50,8 +55,9 @@ class _SignInPageState extends State<SignInPage> {
         child: Center(
           child: SingleChildScrollView(
             child: Card(
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
               margin: const EdgeInsets.all(24),
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -61,7 +67,9 @@ class _SignInPageState extends State<SignInPage> {
                     const Text(
                       "Sign In",
                       style: TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     TextField(
